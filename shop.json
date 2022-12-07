@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Obranný Otrok",
+        "description": "Tento otrok vás obráni pred zlodejmi.",
+        "price": 10000,
+        "emoji": "<:obrannyotrok:1049780051526287390>",
+        "id": "obrannyotrok"
+    },
+    {
+        "name": "Paťo Gun",
+        "description": "Zvyšuje šancu na úspešnosť krádeže, prípadne zabije obranného otroka.",
+        "price": 3000,
+        "emoji": "<:zbran:1049780062024630273>",
+        "id": "patogun"
+    },
+    {
+        "name": "STFU Potion",
+        "description": "Zoberie Paťove právo slobody prejavu na polhodinu.",
+        "price": 30000,
+        "emoji": "<:stfupotion:1049780064570576896>",
+        "id": "stfupotion"
+    },
+    {
+        "name": "Stierací žreb",
+        "description": "Možnosť získať coiny.",
+        "price": 5000,
+        "emoji": "<:loteria:1050094254023770202>",
+        "id": "lottery"
+    }
+    
+]
+
