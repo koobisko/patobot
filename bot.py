@@ -122,6 +122,7 @@ for i in shop:
     tovar.append(OptionChoice(name=i["name"], value=i["id"]))
 
 async def obrannyotrok(ctx):
+    print("fart")
     pass
 
 async def lottery(ctx):
