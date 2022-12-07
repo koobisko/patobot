@@ -18,7 +18,7 @@ coinEmoji = config["coinEmoji"]
 
 connection = sqlite3.connect("database.db")
 cursor = connection.cursor()
-
+pato = bot.fetch_user(config["patoID"])
 
 ###############################################################
 # UTILITY
@@ -37,6 +37,21 @@ def changeBalance(userID, change):
     newBalance = balance[0] + change
 
     cursor.execute("UPDATE users SET balance = :b WHERE id = :i", {"b": newBalance ,"i": str(userID)})
+    connection.commit()
+
+def invToList(userID):
+    inventory = cursor.execute("SELECT inventory FROM users WHERE id = ?", (str(userID),)).fetchone()
+    inv = inventory[0]
+    if inv == None:
+        return []
+    else:
+        return list(inv.split(","))
+
+def ListToInv(li):
+    return ",".join(li)
+
+def modifyInv(string, userID):
+    cursor.execute("UPDATE users SET inventory = :b WHERE id = :i", {"b": string ,"i": str(userID)})
     connection.commit()
 
 ###############################################################
@@ -122,13 +137,22 @@ for i in shop:
     tovar.append(OptionChoice(name=i["name"], value=i["id"]))
 
 async def obrannyotrok(ctx):
-    print("fart")
-    pass
+    inventory = invToList(ctx.author.id)
+    inventory.append("obrannyotrok")
+    modifyInv(ListToInv(inventory), ctx.author.id)
+
+async def patogun(ctx):
+    inventory = invToList(ctx.author.id)
+    inventory.append("patogun")
+    modifyInv(ListToInv(inventory), ctx.author.id)
 
 async def lottery(ctx):
     with open("config.json", "r") as f:
         config = json.load(f)
 
+
+async def stfupotion(ctx):
+    await pato.timeout_for(seconds=1800)
 
     numbers = []
     for i in range(3):

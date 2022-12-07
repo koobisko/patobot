@@ -1,0 +1,16 @@
+{
+    "token": "MTA0OTY1Mzg4NTAyMDY3NjE2Ng.Gu0yXL.OR4lUKjjDNwOU4x9zOJtrGF0SGw5iAbh-t3aWQ",
+
+    "balIncreaseOnMessage": 10,
+
+    "coinEmoji": "<:patocoin:1049780042722459778>",
+    "patoID": 577146984859828225,
+    "lotteryIcons": [
+        "<:obrannyotrokmrtvy:1049780058866331668>",
+        "<:zbran:1049780062024630273>",
+        "<:patocoin:1049780042722459778>"
+    ],
+
+    "lotteryPrizes": [25000, 50000, 100000]
+
+}
