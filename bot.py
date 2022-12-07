@@ -18,7 +18,6 @@ coinEmoji = config["coinEmoji"]
 
 connection = sqlite3.connect("database.db")
 cursor = connection.cursor()
-pato = bot.fetch_user(config["patoID"])
 
 ###############################################################
 # UTILITY
@@ -149,10 +148,6 @@ async def patogun(ctx):
 async def lottery(ctx):
     with open("config.json", "r") as f:
         config = json.load(f)
-
-
-async def stfupotion(ctx):
-    await pato.timeout_for(seconds=1800)
 
     numbers = []
     for i in range(3):
