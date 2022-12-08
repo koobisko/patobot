@@ -154,7 +154,6 @@ async def lottery(ctx):
     for i in range(3):
         numbers.append(random.randint(0, (len(config["lotteryIcons"]) - 1)))
     
-    print(numbers)
 
     if numbers[0] == numbers[1] and numbers[1] == numbers[2]:
         prize = config["lotteryPrizes"][numbers[0]]
@@ -213,5 +212,95 @@ async def zostatok(ctx):
     embed = discord.Embed(title=f"Zostatok - {ctx.author}", description=f"{balance[0]}{coinEmoji}")
     
     await ctx.respond(embed=embed)  
+
+@bot.slash_command(name="okradnúť", description="Okradnúť človeka.")
+async def okradnut(ctx, cloveka: Option(discord.Member, required=True)):
+    try:
+        victimBalance = cursor.execute("SELECT balance FROM users WHERE id = ?", (str(cloveka.id),)).fetchone()
+    except:
+        ctx.respond("Tento človek nemá peňaženku.", ephemeral=True)
+
+    if victimBalance[0] < 750:
+        embed = discord.Embed(title="Oplatí sa ti tu vôbec kradnúť?", description="Tento človek je fakt chudobný.")
+        await ctx.respond(embed=embed, ephemeral=True)
+
+        return
+    
+    robberInv = invToList(ctx.author.id)
+    victimInv = invToList(cloveka.id)
+
+    robChances = random.randint(1,10)
+
+    otrokAlive = True
+
+
+    if "patogun" in robberInv and "obrannyotrok" in victimInv:
+        if robChances >= 7: # kradez vysla
+            robberyPercentage = random.randint(1,10)
+        elif robChances >= 4 : # otrok neumrel
+            failEmbed = discord.Embed(title=f"Obranný otrok ti zabránil okradnúť {cloveka}", description=f"Krádež ti nevyšla.", color=discord.Colour.dark_red())
+            failEmbed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1035114072179490849/1050517109626654740/F8CE3C9A-B5A9-4DC1-8877-37CA6A18296A.png")
+    
+            robberyPercentage = 0
+        else: # otrok umrel
+            failEmbed = discord.Embed(title=f"Obranný otrok ti zabránil okradnúť {cloveka}, súboj neprežil.", description=f"Krádež ti nevyšla.", color=discord.Colour.dark_red())
+            failEmbed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1035114072179490849/1050517109626654740/F8CE3C9A-B5A9-4DC1-8877-37CA6A18296A.png")
+            otrokAlive = False
+            robberyPercentage = 0
+
+    elif "obrannyotrok" in victimInv:
+        if robChances >= 7:
+            robberyPercentage = random.randint(1,10)
+        else:
+            failEmbed = discord.Embed(title=f"Obranný otrok ti zabránil okradnúť {cloveka}", description=f"Krádež ti nevyšla.", color=discord.Colour.dark_red())
+            failEmbed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1035114072179490849/1050517109626654740/F8CE3C9A-B5A9-4DC1-8877-37CA6A18296A.png")
+            robberyPercentage = 0
+        
+    elif "patogun" in robberInv:
+        if robChances >= 4:
+            robberyPercentage = random.randint(1,10)
+        else:
+            failEmbed = discord.Embed(title=f"Netrafil si.", description=f"Krádež ti nevyšla.", color=discord.Colour.dark_red())
+            failEmbed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1035114072179490849/1050517109400150129/D1985ABD-4382-4392-9E10-5DAF0B8D4BBB.png")
+            robberInv.remove("patogun")
+            modifyInv(ListToInv(robberInv), ctx.author.id)
+            robberyPercentage = 0
+    else:
+        if robChances >= 6:
+            robberyPercentage = random.randint(1,10)
+        else:
+            failEmbed = discord.Embed(title=f"Nepodarilo sa.", description=f"Krádež ti nevyšla.", color=discord.Colour.dark_red())
+            robberyPercentage = 0
+
+    if robberyPercentage <= 6:
+        moneyPercentage = random.randint(10, 50)
+    else:
+        moneyPercentage = random.randint(51, 80)
+    
+    if robberyPercentage > 0:
+        robbed = int(victimBalance[0] * (moneyPercentage / 100))
+
+        changeBalance(cloveka.id, -robbed)
+        changeBalance(ctx.author.id, robbed)
+
+        embed = discord.Embed(title=f"Okradol si {cloveka}", description=f"Prišiel o {robbed} {coinEmoji}", color=discord.Colour.dark_green())
+        await ctx.respond(embed=embed)
+
+        embed = discord.Embed(title=f"Bol si okradnutý o {robbed} {coinEmoji}", color=discord.Colour.dark_red())
+        await cloveka.send(embed=embed)
+    else: 
+        await ctx.respond(embed=failEmbed)
+
+    if otrokAlive == False:
+        victimInv.remove("obrannyotrok")
+        modifyInv(ListToInv(victimInv), cloveka.id)
+
+        embed = discord.Embed(title="Tvoj obranný otrok neprežil pokus o krádež.")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1035114072179490849/1050517109626654740/F8CE3C9A-B5A9-4DC1-8877-37CA6A18296A.png")
+        await cloveka.send(embed=embed)
+
+        robberInv.remove("patogun")
+        modifyInv(ListToInv(robberInv), ctx.author.id)
+
 
 bot.run(config["token"])
