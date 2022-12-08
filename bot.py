@@ -15,6 +15,7 @@ with open("config.json", "r") as f:
     config = json.load(f)
 
 coinEmoji = config["coinEmoji"]
+patoID = config["patoID"]
 
 connection = sqlite3.connect("database.db")
 cursor = connection.cursor()
@@ -49,7 +50,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    if message.author.bot == False:
+    if message.author.bot == False and message.author.id != patoID:
 
         response = cursor.execute("SELECT EXISTS(SELECT 1 FROM users WHERE id=?)", (str(message.author.id), ))
         userExists = response.fetchone()[0]
