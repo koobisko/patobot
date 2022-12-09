@@ -15,7 +15,7 @@
     },
     {
         "name": "STFU Potion",
-        "description": "Zoberie Paťove právo slobody prejavu na polhodinu.",
+        "description": "Zoberie Paťove právo slobody prejavu na pol hodinu.",
         "price": 30000,
         "emoji": "<:stfupotion:1049780064570576896>",
         "id": "stfupotion"
