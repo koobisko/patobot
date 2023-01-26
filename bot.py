@@ -79,7 +79,7 @@ async def on_message(message):
             connection.commit()
 
         else:
-            cursor.execute("INSERT INTO users values (?, ?, ?)", (str(message.author.id), str(message.author), 10))
+            cursor.execute("INSERT INTO users values (?, ?, ?)", (str(message.author.id), str(message.author), config["balIncreaseOnMessage"]))
   
 
 ###############################################################
